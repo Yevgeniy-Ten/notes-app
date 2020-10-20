@@ -3,6 +3,8 @@ import BasicForm from "../../components/BasicForm/BasicForm";
 import {NotesList} from "../../components/NotesList/NotesList";
 import axios from "../../assets/instance"
 import {handlerDataFromDB, validString} from "../../assets/helpers";
+import {useNotesApp} from "../NotesApp/NotesContext";
+
 
 export const postRequest = (uri, data) => {
     return axios.post(uri, data).catch(e => {
@@ -10,15 +12,17 @@ export const postRequest = (uri, data) => {
     })
 }
 export const Todos = () => {
+    const {showLoad, hideLoad} = useNotesApp()
     const [todos, setTodos] = useState([])
     const $todoInput = useRef()
     const BASE_URI = "/todos.json"
     useEffect(() => {
+        showLoad()
         axios.get(BASE_URI).then(e => {
             if (e.data) {
                 handlerTodosFromDB(e.data)
             }
-        })
+        }).finally(hideLoad)
     }, [])
     const handlerTodosFromDB = (data) => {
         const todos = handlerDataFromDB(data)
@@ -27,12 +31,14 @@ export const Todos = () => {
     const addTodo = () => {
         const todoTitle = $todoInput.current.value
         if (validString(todoTitle)) {
+            showLoad()
             const data = prepareTodoForRequest(todoTitle)
             postRequest(BASE_URI, data).then((e) => {
                 data.id = e.data.name
                 setTodos((prev) => [data, ...prev])
             }).finally(() => {
                 $todoInput.current.value = ""
+                hideLoad()
             })
         }
     }
@@ -45,12 +51,13 @@ export const Todos = () => {
         }
     }
     const removeTodo = (id) => {
+        showLoad()
         const removeURI = `/todos/${id}.json`
         axios.delete(removeURI).then(e => {
             if (e.statusText === "OK") {
                 setTodos(todos.filter(todo => todo.id !== id))
             }
-        })
+        }).finally(hideLoad)
     }
     return <>
         <BasicForm inputRef={$todoInput} handler={addTodo}/>
