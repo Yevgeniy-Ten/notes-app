@@ -4,14 +4,14 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavbarBrand from "react-bootstrap/NavbarBrand";
 const NavBar = ()=> {
-    return <Navbar bg="dark" variant="dark" fixed="top">
+    return <Navbar bg="dark" variant="dark">
         <NavbarBrand>
             Notes-App
         </NavbarBrand>
         <Nav className="ml-auto">
             <NavLink className="nav-link" to={"/todos"}>Todos</NavLink>
             <NavLink className="nav-link" to={"/movies"}>Movies</NavLink>
-            <NavLink className="nav-link" to={"/about"}>About</NavLink>
+            <NavLink className="nav-link" exact to={"/"}>About</NavLink>
         </Nav>
     </Navbar>
 }
