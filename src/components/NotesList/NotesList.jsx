@@ -3,13 +3,14 @@ import ListGroup from "react-bootstrap/cjs/ListGroup";
 import {TodoItem} from "./TodoItem/TodoItem";
 import {MovieItem} from "./MovieItem/MovieItem";
 
-export const NotesList = ({items, type}) => {
+export const NotesList = ({items, type, onRemove}) => {
     if (!type) return null;
     let notesItems = []
     if (type === "movies") {
-        notesItems = items.map(el => <MovieItem title={el.title} date={el.date}></MovieItem>)
+        notesItems = items.map(el => <MovieItem title={el.title} date={el.date}/>)
     } else if (type === "todos") {
-        notesItems = items.map((el) => <TodoItem title={el.title} date={el.date}/>)
+        notesItems = items.map((el) => <TodoItem key={el.id} onRemove={onRemove.bind(null, el.id)} title={el.title}
+                                                 date={el.date}/>)
     }
     return <ListGroup className="mt-3 shadow">
         {
