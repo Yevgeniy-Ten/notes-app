@@ -6,6 +6,11 @@ import FormLabel from "react-bootstrap/FormLabel";
 import FormGroup from "react-bootstrap/FormGroup"
 
 export const MovieItem = ({title, date, onRemove, onChange, onUpdate}) => {
+    const keyPressHandler = (e) => {
+        if (e.key === "Enter") {
+            onUpdate()
+        }
+    }
     return <ListGroupItem className="d-flex align-items-center justify-content-between">
         <FormGroup className="flex-grow-1 mr-5">
             <FormLabel>{date}</FormLabel>
@@ -14,6 +19,7 @@ export const MovieItem = ({title, date, onRemove, onChange, onUpdate}) => {
                 value={title}
                 onChange={onChange}
                 onBlur={onUpdate}
+                onKeyPress={keyPressHandler}
             />
         </FormGroup>
         <Button onClick={onRemove} variant="outline-danger">&times;</Button>
