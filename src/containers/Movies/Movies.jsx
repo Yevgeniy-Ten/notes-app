@@ -5,9 +5,10 @@ import axios from "../../assets/instance"
 import {validString, handlerDataFromDB} from "../../assets/helpers";
 import {postRequest} from "../Todos/Todos";
 import {useNotesApp} from "../NotesApp/NotesContext";
+import {NotesAlert} from "../../components/NotesAlert/NotesAlert";
 
 export const Movies = () => {
-    const {showLoad, hideLoad} = useNotesApp()
+    const {showLoad, hideLoad, showAlert, isAlertShow} = useNotesApp()
     const [movies, setMovies] = useState([])
     const $movieInput = useRef()
     useEffect(() => {
@@ -30,11 +31,18 @@ export const Movies = () => {
             postRequest(BASE_URI, data).then((e) => {
                 data.id = e.data.name
                 setMovies((prev) => [data, ...prev])
+                showAlert()
             }).finally(() => {
                 $movieInput.current.value = ""
                 hideLoad()
             })
         }
+    }
+    const movieTitleUpdate = (id) => {
+        showLoad()
+        const updateURI = `/movies/${id}.json`
+        const movie = movies.find(m => m.id === id)
+        axios.put(updateURI, movie).finally(hideLoad)
     }
     const movieTitleChange = (id, title) => {
         if (title.length < 1) {
@@ -69,6 +77,10 @@ export const Movies = () => {
     const BASE_URI = '/movies.json'
     return <>
         <BasicForm inputRef={$movieInput} handler={addMovie}/>
-        <NotesList items={movies} onRemove={removeMovie} type="movies" onChange={movieTitleChange}/>
+        <NotesAlert message="Succesfull add, Congrulations!" type="success" show={isAlertShow}/>
+        <NotesList items={movies} onRemove={removeMovie}
+                   type="movies"
+                   onChange={movieTitleChange}
+                   onUpdate={movieTitleUpdate}/>
     </>
 }
