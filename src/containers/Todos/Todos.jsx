@@ -2,8 +2,13 @@ import React, {useEffect, useRef, useState} from "react";
 import BasicForm from "../../components/BasicForm/BasicForm";
 import {NotesList} from "../../components/NotesList/NotesList";
 import axios from "../../assets/instance"
-import {validString} from "../../assets/helpers";
+import {handlerDataFromDB, validString} from "../../assets/helpers";
 
+export const postRequest = (uri, data) => {
+    return axios.post(uri, data).catch(e => {
+        console.error("error", e)
+    })
+}
 export const Todos = () => {
     const [todos, setTodos] = useState([])
     const $todoInput = useRef()
@@ -16,12 +21,7 @@ export const Todos = () => {
         })
     }, [])
     const handlerTodosFromDB = (data) => {
-        const todos = Object.keys(data).map(id => {
-            return {
-                ...data[id],
-                id
-            }
-        }).reverse()
+        const todos = handlerDataFromDB(data)
         setTodos(todos)
     }
     const addTodo = () => {
@@ -36,17 +36,13 @@ export const Todos = () => {
             })
         }
     }
+
     const prepareTodoForRequest = (title) => {
         return {
             title,
             date: new Date().toLocaleString(),
             completed: false,
         }
-    }
-    const postRequest = (uri, data) => {
-        return axios.post(uri, data).catch(e => {
-            console.error("error", e)
-        })
     }
     const removeTodo = (id) => {
         const removeURI = `/todos/${id}.json`
