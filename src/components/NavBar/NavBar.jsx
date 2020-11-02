@@ -10,7 +10,7 @@ const NavBar = ()=> {
         </NavbarBrand>
         <Nav className="ml-auto">
             <NavLink className="nav-link" to={"/todos"}>Todos</NavLink>
-            <NavLink className="nav-link" to={"/movies"}>Movies</NavLink>
+            <NavLink className="nav-link" to={"/notes"}>Notes</NavLink>
             <NavLink className="nav-link" exact to={"/"}>About</NavLink>
         </Nav>
     </Navbar>

@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import FormLabel from "react-bootstrap/FormLabel";
 import FormGroup from "react-bootstrap/FormGroup"
 
-export const MovieItem = ({title, date, onRemove, onChange, onUpdate}) => {
+export const NoteItem = ({title, date, onRemove, onChange, onUpdate}) => {
     const keyPressHandler = (e) => {
         if (e.key === "Enter") {
             onUpdate()

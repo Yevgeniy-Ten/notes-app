@@ -7,10 +7,11 @@ import {postRequest} from "../Todos/Todos";
 import {useNotesApp} from "../NotesApp/NotesContext";
 import {NotesAlert} from "../../components/NotesAlert/NotesAlert";
 
-export const Movies = () => {
+export const Notes = () => {
     const {showLoad, hideLoad, showAlert, isAlertShow} = useNotesApp()
-    const [movies, setMovies] = useState([])
-    const $movieInput = useRef()
+    const [notes, setNotes] = useState([])
+    const $noteInput = useRef()
+    const BASE_URI = '/notes.json'
     useEffect(() => {
         showLoad()
         axios.get(BASE_URI).then(e => {
@@ -20,36 +21,36 @@ export const Movies = () => {
         }).finally(hideLoad)
     }, [])
     const handlerMoviesFromDB = (data) => {
-        const movies = handlerDataFromDB(data)
-        setMovies(movies)
+        const notes = handlerDataFromDB(data)
+        setNotes(notes)
     }
     const addMovie = () => {
-        const movie = $movieInput.current.value
-        if (validString(movie)) {
+        const note = $noteInput.current.value
+        if (validString(note)) {
             showLoad()
-            const data = prepareMovieForRequest(movie)
+            const data = prepareNoteForRequest(note)
             postRequest(BASE_URI, data).then((e) => {
                 data.id = e.data.name
-                setMovies((prev) => [data, ...prev])
+                setNotes((prev) => [data, ...prev])
                 showAlert()
             }).finally(() => {
-                $movieInput.current.value = ""
+                $noteInput.current.value = ""
                 hideLoad()
             })
         }
     }
-    const movieTitleUpdate = (id) => {
+    const noteTitleUpdate = (id) => {
         showLoad()
-        const updateURI = `/movies/${id}.json`
-        const movie = movies.find(m => m.id === id)
+        const updateURI = `/notes/${id}.json`
+        const movie = notes.find(m => m.id === id)
         axios.put(updateURI, movie).finally(hideLoad)
     }
-    const movieTitleChange = (id, title) => {
+    const noteTitleChange = (id, title) => {
         if (title.length < 1) {
-            removeMovie(id)
+            removeNote(id)
             return;
         }
-        setMovies(movies.map(movie => {
+        setNotes(notes.map(movie => {
             if (movie.id === id) {
                 return {
                     ...movie,
@@ -59,28 +60,28 @@ export const Movies = () => {
             return movie
         }))
     }
-    const prepareMovieForRequest = (title) => {
+    const prepareNoteForRequest = (title) => {
         return {
             title,
             date: new Date().toLocaleString(),
         }
     }
-    const removeMovie = (id) => {
+    const removeNote = (id) => {
         showLoad()
-        const removeURI = `/movies/${id}.json`
+        const removeURI = `/notes/${id}.json`
         axios.delete(removeURI).then(e => {
             if (e.statusText === "OK") {
-                setMovies(movies.filter(movie => movie.id !== id))
+                setNotes(notes.filter(note => note.id !== id))
             }
         }).finally(hideLoad)
     }
-    const BASE_URI = '/movies.json'
+
     return <>
-        <BasicForm inputRef={$movieInput} handler={addMovie}/>
+        <BasicForm inputRef={$noteInput} handler={addMovie}/>
         <NotesAlert message="Succesfull add, Congrulations!" type="success" show={isAlertShow}/>
-        <NotesList items={movies} onRemove={removeMovie}
-                   type="movies"
-                   onChange={movieTitleChange}
-                   onUpdate={movieTitleUpdate}/>
+        <NotesList items={notes} onRemove={removeNote}
+                   type="notes"
+                   onChange={noteTitleChange}
+                   onUpdate={noteTitleUpdate}/>
     </>
 }

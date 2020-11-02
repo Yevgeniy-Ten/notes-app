@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import {Switch, Route, Redirect} from "react-router-dom"
 import {About} from "../../pages/About/About";
 import {Todos} from "../Todos/Todos";
-import {Movies} from "../Movies/Movies";
+import {Notes} from "../Notes/Notes";
 import {Preloader} from "../../components/Preloader/Preloader";
 import NotesProvider from "./NotesContext";
 
@@ -17,9 +17,9 @@ function NotesApp() {
                 <Preloader/>
                 <Container>
                     <Switch>
-                        <Route exact path="/" component={About}></Route>
-                        <Route path="/todos" exact component={Todos}></Route>
-                        <Route path="/movies" exact component={Movies}></Route>
+                        <Route exact path="/" component={About}/>
+                        <Route path="/todos" exact component={Todos}/>
+                        <Route path="/notes" exact component={Notes}/>
                         <Redirect from="" to="/"/>
                     </Switch>
                 </Container>
